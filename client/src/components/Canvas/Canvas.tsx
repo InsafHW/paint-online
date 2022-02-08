@@ -29,27 +29,82 @@ function Canvas() {
         }
     }, [canvasRef])
 
+    const drawRectangle = useCallback((ctx: CanvasRenderingContext2D, e: MouseEvent) => {
+        ctx.beginPath()
+        const currentPosition = getMousePosition(e)
+        const width = currentPosition.x - startPosition.current.x
+        const height = currentPosition.y - startPosition.current.y
+        ctx.clearRect(0, 0, 800, 600)
+        ctx.rect(startPosition.current.x, startPosition.current.y, width, height)
+        ctx.stroke()
+        ctx.closePath()
+    }, [])
+
+    const drawCircle = useCallback((ctx: CanvasRenderingContext2D, e: MouseEvent) => {
+        ctx.beginPath()
+        const currentPosition = getMousePosition(e)
+        const centerX = startPosition.current.x + (currentPosition.x - startPosition.current.x) / 2
+        const centerY = startPosition.current.y + (currentPosition.y - startPosition.current.y) / 2
+        const radius = Math.abs(((currentPosition.x - startPosition.current.x) / 2))
+        ctx.clearRect(0, 0, 800, 600)
+        ctx.arc(centerX, centerY, radius, 0, 360)
+        ctx.stroke()
+        ctx.closePath()
+    }, [])
+
+    const drawTriangle = useCallback((ctx: CanvasRenderingContext2D, e: MouseEvent) => {
+        ctx.beginPath()
+        const currentPosition = getMousePosition(e)
+        const left = {
+            x: startPosition.current.x,
+            y: currentPosition.y
+        }
+        const top = {
+            x: startPosition.current.x + (currentPosition.x - startPosition.current.x) / 2,
+            y: startPosition.current.y
+        }
+        const right = {
+            x: currentPosition.x,
+            y: currentPosition.y
+        }
+        ctx.clearRect(0, 0, 800, 600)
+        ctx.moveTo(left.x, left.y)
+        ctx.lineTo(top.x, top.y)
+        ctx.lineTo(right.x, right.y)
+        ctx.closePath()
+        ctx.stroke()
+    }, [])
+
     useEffect(() => {
         if (!canvasRef.current) return
 
         const listeners = {
             onMouseDownHandler: (e: MouseEvent) => {
                 if (!canvasRef.current) return
-                const {top, left} = canvasRef.current.getBoundingClientRect()
                 mousePressed.current = true
                 startPosition.current = getMousePosition(e)
-                console.log(startPosition.current)
             },
             onMouseMoveHandler: (e: MouseEvent) => {
-                if (mousePressed.current) {
-                    console.log(e, tool)
+                if (mousePressed.current && canvasRef.current) {
+                    const ctx = canvasRef.current.getContext('2d')
+                    if (ctx) {
+                        switch (tool) {
+                            case 'RECTANGLE':
+                                drawRectangle(ctx, e)
+                                break
+                            case 'CIRCLE':
+                                drawCircle(ctx, e)
+                                break
+                            case 'TRIANGLE':
+                                drawTriangle(ctx, e)
+                                break
+                        }
+                    }
                 }
             },
             onMouseUpHandler: (e: MouseEvent) => {
-                console.log(e, tool)
                 mousePressed.current = false
                 endPosition.current = getMousePosition(e)
-                console.log(endPosition.current)
             }
         }
 
