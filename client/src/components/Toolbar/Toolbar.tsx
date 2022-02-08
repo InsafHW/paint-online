@@ -13,35 +13,25 @@ const DEFAULT_ICON_COLOR = 'white'
 function Toolbar() {
     const [tool, {changeTool}] = useAtom(selectedToolAtom)
 
+    const getIconProps = (selected: boolean) => ({
+            size: ICON_SIZE,
+            color: selected ? SELECTED_ICON_COLOR : DEFAULT_ICON_COLOR
+        })
+
     const buttons = [
         {
             id: 'rectangle',
-            icon: () => (
-                <BiRectangle
-                    size={ICON_SIZE}
-                    color={tool === 'RECTANGLE' ? SELECTED_ICON_COLOR : DEFAULT_ICON_COLOR}
-                />
-            ),
+            icon: () => <BiRectangle {...getIconProps(tool === 'RECTANGLE')} />,
             onClick: () => changeTool(Tool.RECTANGLE),
         },
         {
             id: 'circle',
-            icon: () => (
-                <VscCircleLargeOutline
-                    size={ICON_SIZE}
-                    color={tool === 'CIRCLE' ? SELECTED_ICON_COLOR : DEFAULT_ICON_COLOR}
-                />
-            ),
+            icon: () => <VscCircleLargeOutline {...getIconProps(tool === 'CIRCLE')} />,
             onClick: () => changeTool(Tool.CIRCLE),
         },
         {
             id: 'triangle',
-            icon: () => (
-                <IoTriangleOutline
-                    size={ICON_SIZE}
-                    color={tool === 'TRIANGLE' ? SELECTED_ICON_COLOR : DEFAULT_ICON_COLOR}
-                />
-            ),
+            icon: () => <IoTriangleOutline {...getIconProps(tool === 'TRIANGLE')} />,
             onClick: () => changeTool(Tool.TRIANGLE),
         }
     ]

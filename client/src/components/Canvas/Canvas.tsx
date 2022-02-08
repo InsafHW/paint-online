@@ -1,7 +1,7 @@
 import classes from './Canvas.module.css'
 import {useAtom} from "@reatom/react";
 import {selectedToolAtom} from "../../model/tools";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useEffect, useRef} from "react";
 
 function Canvas() {
     const [tool] = useAtom(selectedToolAtom)
