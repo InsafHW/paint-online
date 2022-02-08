@@ -55,17 +55,19 @@ function Canvas() {
     const drawTriangle = useCallback((ctx: CanvasRenderingContext2D, e: MouseEvent) => {
         ctx.beginPath()
         const currentPosition = getMousePosition(e)
+        const currentPositionYBellowStart = currentPosition.y > startPosition.current.y
+        const currentPositionXRighterStart = currentPosition.x > startPosition.current.x
         const left = {
-            x: startPosition.current.x,
-            y: currentPosition.y
+            x: currentPositionXRighterStart ? startPosition.current.x : currentPosition.x,
+            y: currentPositionYBellowStart ? currentPosition.y : startPosition.current.y
         }
         const top = {
             x: startPosition.current.x + (currentPosition.x - startPosition.current.x) / 2,
-            y: startPosition.current.y
+            y: currentPositionYBellowStart ? startPosition.current.y : currentPosition.y
         }
         const right = {
-            x: currentPosition.x,
-            y: currentPosition.y
+            x: currentPositionXRighterStart ? currentPosition.x : startPosition.current.x,
+            y: currentPositionYBellowStart ? currentPosition.y : startPosition.current.y
         }
         ctx.clearRect(0, 0, 800, 600)
         ctx.moveTo(left.x, left.y)
